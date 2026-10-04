@@ -1,5 +1,8 @@
 use std::sync::Arc;
 
+use crate::gfx::Frame;
+use crate::gfx::colour;
+
 use pixels::{Pixels, SurfaceTexture};
 use winit::{
     application::ApplicationHandler,
@@ -8,9 +11,6 @@ use winit::{
     keyboard::{Key, NamedKey},
     window::{Window, WindowId},
 };
-
-const WIDTH: u32 = 160;
-const HEIGHT: u32 = 160;
 
 pub struct App {
     window: Option<Arc<Window>>,
@@ -34,11 +34,11 @@ impl ApplicationHandler for App {
 
         let window_size = window.inner_size();
 
+        // Create and pass window reference to pixels surface
         let window_arc = Arc::new(window);
-
         let surface =
             SurfaceTexture::new(window_size.width, window_size.height, window_arc.clone());
-        let pixels = Pixels::new(WIDTH, HEIGHT, surface).unwrap();
+        let pixels = Pixels::new(window_size.width, window_size.height, surface).unwrap();
 
         self.window = Some(window_arc);
         self.pixels = Some(pixels);
@@ -68,14 +68,17 @@ impl ApplicationHandler for App {
             }
             WindowEvent::RedrawRequested => {
                 if let Some(pixels) = &mut self.pixels {
-                    let frame = pixels.frame_mut();
+                    let (f_w, f_h) = {
+                        let tex = pixels.texture();
+                        (tex.width(), tex.height())
+                    };
+                    let pixels_frame: &mut [u8] = pixels.frame_mut();
 
-                    for chunk in frame.chunks_exact_mut(4) {
-                        chunk[0] = 0xFF;
-                        chunk[1] = 0xFF;
-                        chunk[2] = 0x00;
-                        chunk[3] = 0xFF;
-                    }
+                    // Set up a custom gfx frame
+                    let mut frame = Frame::new(f_w, f_h, pixels_frame);
+
+                    frame.fill_rect(0, 0, 100, 100, colour::RED);
+                    frame.fill_rect(50, 50, 100, 100, colour::GREEN);
 
                     if let Err(e) = pixels.render() {
                         eprintln!("Pixels render failed: {e}");
@@ -97,6 +100,9 @@ impl ApplicationHandler for App {
                 // space = play/pause
                 // left/right key = scrub through playback
                 // up/down key = change playback speed / scrub distance?
+                //
+                // Some algorithm exclusive controls
+                // r = randomize array (for sorters)
             }
 
             _ => {}
