@@ -1,1 +1,1 @@
-mod sorter;
+pub mod sorter;

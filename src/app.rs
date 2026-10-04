@@ -3,6 +3,7 @@ use std::sync::Arc;
 use crate::gfx::Frame;
 use crate::gfx::colour;
 
+use crate::playback::Playback;
 use pixels::{Pixels, SurfaceTexture};
 use winit::{
     application::ApplicationHandler,
@@ -15,6 +16,7 @@ use winit::{
 pub struct App {
     window: Option<Arc<Window>>,
     pixels: Option<Pixels<'static>>,
+    playback: Option<Box<dyn Playback>>,
 }
 
 impl App {
@@ -22,6 +24,7 @@ impl App {
         Self {
             window: None,
             pixels: None,
+            playback: None,
         }
     }
 }
@@ -90,22 +93,15 @@ impl ApplicationHandler for App {
                 }
             }
             WindowEvent::KeyboardInput { event, .. } => {
-                if event.repeat {
-                    // Ignore repeated presses when key is held
-                    return;
-                }
-
                 if event.logical_key == Key::Named(NamedKey::Escape) {
                     event_loop.exit();
                 }
 
-                // Handle viewer controls
+                // Handle playback controls
                 // space = play/pause
                 // left/right key = scrub through playback
                 // up/down key = change playback speed / scrub distance?
-                //
-                // Some algorithm exclusive controls
-                // r = randomize array (for sorters)
+                // r = reset?
             }
 
             _ => {}

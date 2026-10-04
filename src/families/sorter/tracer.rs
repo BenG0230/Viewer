@@ -1,7 +1,7 @@
 use super::Op;
 
 // used by the algorithm implementation to capture all operations on the data
-pub(super) struct Tracer {
+pub struct Tracer {
     data: Vec<u32>,
     operations: Vec<Op>,
 }
@@ -20,7 +20,6 @@ impl Tracer {
     }
 
     // Implementation methods - used by the implementation so all operations on the data are caught
-
     pub fn read(&mut self, a: usize) -> u32 {
         self.operations.push(Op::Read(a));
         self.data[a]

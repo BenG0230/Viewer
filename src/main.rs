@@ -1,14 +1,15 @@
 mod app;
+mod catalog;
 mod families;
 mod gfx;
-mod session;
+mod playback;
 
 use app::App;
 use winit::event_loop::EventLoop;
 
-fn main() {
+fn main() -> Result<(), winit::error::EventLoopError> {
     let event_loop = EventLoop::new().unwrap();
     let mut app = App::new();
 
-    let _ = event_loop.run_app(&mut app);
+    event_loop.run_app(&mut app)
 }

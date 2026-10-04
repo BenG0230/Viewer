@@ -1,1 +1,1 @@
-mod bubble;
+pub mod bubble;
