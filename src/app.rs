@@ -77,8 +77,11 @@ impl ApplicationHandler for App {
                     // Set up a custom gfx frame
                     let mut frame = Frame::new(f_w, f_h, pixels_frame);
 
-                    frame.fill_rect(0, 0, 100, 100, colour::RED);
-                    frame.fill_rect(50, 50, 100, 100, colour::GREEN);
+                    frame.clear(colour::BLACK);
+
+                    frame.fill_rect(0, 0, 100, 100, colour::YELLOW);
+                    frame.fill_rect(100, 0, 100, 100, colour::CYAN);
+                    frame.fill_rect(200, 0, 100, 100, colour::PURPLE);
 
                     if let Err(e) = pixels.render() {
                         eprintln!("Pixels render failed: {e}");

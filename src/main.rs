@@ -1,5 +1,7 @@
 mod app;
+mod families;
 mod gfx;
+mod session;
 
 use app::App;
 use winit::event_loop::EventLoop;
