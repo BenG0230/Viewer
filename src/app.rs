@@ -46,7 +46,7 @@ impl ApplicationHandler for App {
 
         self.window = Some(window_arc);
         self.pixels = Some(pixels);
-        self.playback = Some(catalog::ENTRIES[0].build());
+        self.playback = Some(catalog::ENTRIES[1].build());
     }
 
     fn window_event(

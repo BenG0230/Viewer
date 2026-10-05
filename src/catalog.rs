@@ -1,5 +1,4 @@
 use crate::families::sorter;
-use crate::families::sorter::algorithms::bubble::bubble_sort;
 use crate::playback::Playback;
 
 pub struct CatalogEntry {
@@ -13,7 +12,13 @@ impl CatalogEntry {
     }
 }
 
-pub static ENTRIES: &[CatalogEntry] = &[CatalogEntry {
-    name: "Bubble Sort",
-    build_fn: || sorter::build(bubble_sort),
-}];
+pub static ENTRIES: &[CatalogEntry] = &[
+    CatalogEntry {
+        name: "Bubble Sort",
+        build_fn: || sorter::build(sorter::algorithms::bubble_sort),
+    },
+    CatalogEntry {
+        name: "Insertion Sort",
+        build_fn: || sorter::build(sorter::algorithms::insertion_sort),
+    },
+];
