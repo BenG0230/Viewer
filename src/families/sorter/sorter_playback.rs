@@ -1,7 +1,7 @@
 use super::Op;
 use crate::{gfx::colour, playback::Playback};
 
-const MARGIN: u32 = 25;
+const MARGIN: f32 = 0.05;
 
 pub struct SorterPlayback {
     input: Vec<u32>,
@@ -61,7 +61,6 @@ impl SorterPlayback {
             Op::Finish => {
                 return colour::GREEN;
             }
-            _ => {}
         }
 
         return colour::WHITE;
@@ -92,8 +91,11 @@ impl Playback for SorterPlayback {
     }
 
     fn draw(&self, frame: &mut crate::gfx::Frame) {
-        let useable_w = frame.get_width() - 2 * MARGIN;
-        let useable_h = frame.get_height() - 2 * MARGIN;
+        let margin_w = (frame.get_width() as f32 * MARGIN) as u32;
+        let margin_h = (frame.get_height() as f32 * MARGIN) as u32;
+
+        let useable_w = frame.get_width() - 2 * margin_w;
+        let useable_h = frame.get_height() - 2 * margin_h;
         let data_len = self.data.len();
         let bar_w = useable_w as f32 / data_len as f32;
 
@@ -103,8 +105,8 @@ impl Playback for SorterPlayback {
 
             let bar_h = (useable_h as f32 * (bar_val as f32 / data_len as f32)) as u32;
 
-            let x = MARGIN + (bar_w * i as f32) as u32;
-            let y = MARGIN + (useable_h - bar_h);
+            let x = margin_w + (bar_w * i as f32) as u32;
+            let y = margin_h + (useable_h - bar_h);
 
             frame.fill_rect(x, y, bar_w as u32, bar_h, bar_col);
         }

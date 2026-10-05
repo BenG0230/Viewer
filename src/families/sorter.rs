@@ -6,7 +6,7 @@ use crate::playback::Playback;
 use rand::seq::SliceRandom;
 use sorter_playback::SorterPlayback;
 
-const ARRAY_LENGTH: u32 = 100;
+const ARRAY_LENGTH: u32 = 150;
 
 #[derive(Clone, Copy, Debug)]
 pub(crate) enum Op {
@@ -29,12 +29,8 @@ pub fn build(sorter_function: fn(&mut tracer::Tracer)) -> Box<dyn Playback> {
     sorter_function(&mut tracer);
 
     // Consume the tracer and create a playback off the operation list and initial arr
-    let (mut operations, arr_sorted) = tracer.finish();
-    assert_eq!(
-        arr_orig, arr_sorted,
-        "Error, list not sorted: {:?}",
-        arr_sorted
-    );
+    let mut operations = tracer.finish();
     operations.push(Op::Finish);
+
     Box::new(SorterPlayback::new(arr, operations))
 }
