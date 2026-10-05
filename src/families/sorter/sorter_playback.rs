@@ -1,5 +1,7 @@
 use super::Op;
-use crate::playback::Playback;
+use crate::{gfx::colour, playback::Playback};
+
+const MARGIN: u32 = 25;
 
 pub struct SorterPlayback {
     input: Vec<u32>,
@@ -31,6 +33,28 @@ impl SorterPlayback {
             _ => {}
         }
     }
+
+    pub fn get_bar_col(&self, i: usize) -> [u8; 4] {
+        match self.trace[self.cursor] {
+            Op::Read(a) => {
+                if i == a {
+                    return colour::GREEN;
+                }
+            }
+            Op::Compare(a, b) => {
+                if i == a || i == b {
+                    return colour::BLUE;
+                }
+            }
+            Op::Swap(a, b) => {
+                if i == a || i == b {
+                    return colour::RED;
+                }
+            }
+        }
+
+        return colour::WHITE;
+    }
 }
 
 impl Playback for SorterPlayback {
@@ -40,19 +64,38 @@ impl Playback for SorterPlayback {
         self.perform_op(curr_op);
 
         // increment cursor
-        self.cursor += 1;
+        if self.cursor != self.trace.len() - 1 {
+            self.cursor += 1;
+        }
     }
 
     fn back(&mut self) {
         // decrement cursor
-        self.cursor -= 1;
+        if self.cursor != 0 {
+            self.cursor -= 1;
 
-        // reverse operation under cursor
-        let last_op = self.trace[self.cursor];
-        self.reverse_op(last_op);
+            // reverse operation under cursor
+            let last_op = self.trace[self.cursor];
+            self.reverse_op(last_op);
+        }
     }
 
     fn draw(&self, frame: &mut crate::gfx::Frame) {
-        todo!()
+        let useable_w = frame.get_width() - 2 * MARGIN;
+        let useable_h = frame.get_height() - 2 * MARGIN;
+        let data_len = self.data.len();
+        let bar_w = useable_w / data_len as u32;
+
+        for i in 0..data_len {
+            let bar_val = self.data[i];
+            let bar_col = self.get_bar_col(i);
+
+            let bar_h = (useable_h as f32 * (bar_val as f32 / data_len as f32)) as u32;
+
+            let x = MARGIN + bar_w * i as u32;
+            let y = MARGIN + (useable_h - bar_h);
+
+            frame.fill_rect(x, y, bar_w, bar_h, bar_col);
+        }
     }
 }

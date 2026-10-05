@@ -2,9 +2,15 @@ use crate::families::sorter;
 use crate::families::sorter::algorithms::bubble::bubble_sort;
 use crate::playback::Playback;
 
-struct CatalogEntry {
+pub struct CatalogEntry {
     name: &'static str,
     build_fn: fn() -> Box<dyn Playback>,
+}
+
+impl CatalogEntry {
+    pub fn build(&self) -> Box<dyn Playback> {
+        (self.build_fn)()
+    }
 }
 
 pub static ENTRIES: &[CatalogEntry] = &[CatalogEntry {

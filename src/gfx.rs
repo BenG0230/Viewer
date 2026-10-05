@@ -21,6 +21,14 @@ impl<'a> Frame<'a> {
         }
     }
 
+    pub fn get_width(&self) -> u32 {
+        self.width
+    }
+
+    pub fn get_height(&self) -> u32 {
+        self.height
+    }
+
     pub fn clear(&mut self, colour: [u8; 4]) {
         for px in self.buffer.chunks_exact_mut(4) {
             px.copy_from_slice(&colour);

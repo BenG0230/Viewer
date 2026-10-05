@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::catalog;
 use crate::gfx::Frame;
 use crate::gfx::colour;
 
@@ -45,6 +46,7 @@ impl ApplicationHandler for App {
 
         self.window = Some(window_arc);
         self.pixels = Some(pixels);
+        self.playback = Some(catalog::ENTRIES[0].build());
     }
 
     fn window_event(
@@ -82,9 +84,9 @@ impl ApplicationHandler for App {
 
                     frame.clear(colour::BLACK);
 
-                    frame.fill_rect(0, 0, 100, 100, colour::YELLOW);
-                    frame.fill_rect(100, 0, 100, 100, colour::CYAN);
-                    frame.fill_rect(200, 0, 100, 100, colour::PURPLE);
+                    if let Some(playback) = &mut self.playback {
+                        playback.draw(&mut frame);
+                    }
 
                     if let Err(e) = pixels.render() {
                         eprintln!("Pixels render failed: {e}");
@@ -93,15 +95,34 @@ impl ApplicationHandler for App {
                 }
             }
             WindowEvent::KeyboardInput { event, .. } => {
+                // if event.repeat {
+                //     return;
+                // }
+
                 if event.logical_key == Key::Named(NamedKey::Escape) {
                     event_loop.exit();
                 }
+                let mut redraw = true;
+                if event.state.is_pressed() {
+                    if let Some(playback) = &mut self.playback {
+                        // Handle playback controls
+                        // space = play/pause
+                        // left/right key = scrub through playback
+                        // up/down key = change playback speed / scrub distance?
+                        // r = reset?
+                        match event.logical_key.as_ref() {
+                            Key::Named(NamedKey::ArrowLeft) => playback.back(),
+                            Key::Named(NamedKey::ArrowRight) => playback.forward(),
+                            _ => {
+                                redraw = false;
+                            }
+                        }
+                    }
+                }
 
-                // Handle playback controls
-                // space = play/pause
-                // left/right key = scrub through playback
-                // up/down key = change playback speed / scrub distance?
-                // r = reset?
+                if redraw && let Some(window) = &mut self.window {
+                    window.request_redraw();
+                }
             }
 
             _ => {}
