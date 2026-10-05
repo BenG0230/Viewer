@@ -21,4 +21,8 @@ pub static ENTRIES: &[CatalogEntry] = &[
         name: "Insertion Sort",
         build_fn: || sorter::build(sorter::algorithms::insertion_sort),
     },
+    CatalogEntry {
+        name: "Bottom-Up Heap Sort",
+        build_fn: || sorter::build(sorter::algorithms::heap_sort),
+    },
 ];
