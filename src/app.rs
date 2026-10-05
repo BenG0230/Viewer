@@ -113,6 +113,14 @@ impl ApplicationHandler for App {
                         match event.logical_key.as_ref() {
                             Key::Named(NamedKey::ArrowLeft) => playback.back(),
                             Key::Named(NamedKey::ArrowRight) => playback.forward(),
+                            Key::Character(c) => {
+                                if c.chars().nth(0).unwrap().is_numeric() {
+                                    let i = c.parse::<usize>().unwrap();
+                                    if i != 0 && i - 1 < catalog::ENTRIES.len() {
+                                        self.playback = Some(catalog::ENTRIES[i - 1].build());
+                                    }
+                                }
+                            }
                             _ => {
                                 redraw = false;
                             }
