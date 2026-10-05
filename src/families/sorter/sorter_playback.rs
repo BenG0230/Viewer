@@ -51,6 +51,10 @@ impl SorterPlayback {
                     return colour::RED;
                 }
             }
+            Op::Finish => {
+                return colour::GREEN;
+            }
+            _ => {}
         }
 
         return colour::WHITE;

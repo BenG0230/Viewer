@@ -15,8 +15,8 @@ impl Tracer {
     }
 
     // Called after algorithm is run, moves operation out and consumes the tracer
-    pub fn finish(self) -> Vec<Op> {
-        self.operations
+    pub fn finish(self) -> (Vec<Op>, Vec<u32>) {
+        (self.operations, self.data)
     }
 
     // Implementation methods - used by the implementation so all operations on the data are caught
