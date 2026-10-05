@@ -25,6 +25,11 @@ impl Tracer {
         self.data[a]
     }
 
+    pub fn write(&mut self, a: usize, b: u32) {
+        self.operations.push(Op::Write(a, b, self.data[a]));
+        self.data[a] = b;
+    }
+
     pub fn less_than(&mut self, a: usize, b: usize) -> bool {
         self.operations.push(Op::Compare(a, b));
         self.data[a] < self.data[b]

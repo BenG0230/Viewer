@@ -6,11 +6,12 @@ use crate::playback::Playback;
 use rand::seq::SliceRandom;
 use sorter_playback::SorterPlayback;
 
-const ARRAY_LENGTH: u32 = 10;
+const ARRAY_LENGTH: u32 = 100;
 
 #[derive(Clone, Copy, Debug)]
 pub(crate) enum Op {
     Read(usize),
+    Write(usize, u32, u32), // index, new val, old val
     Compare(usize, usize),
     Swap(usize, usize),
     Finish,

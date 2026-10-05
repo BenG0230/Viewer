@@ -22,6 +22,7 @@ impl SorterPlayback {
 
     pub fn perform_op(&mut self, operation: Op) {
         match operation {
+            Op::Write(a, b, _) => self.data[a] = b,
             Op::Swap(a, b) => self.data.swap(a, b),
             _ => {}
         }
@@ -29,6 +30,7 @@ impl SorterPlayback {
 
     pub fn reverse_op(&mut self, operation: Op) {
         match operation {
+            Op::Write(a, _, b) => self.data[a] = b,
             Op::Swap(a, b) => self.data.swap(a, b),
             _ => {}
         }
@@ -38,7 +40,12 @@ impl SorterPlayback {
         match self.trace[self.cursor] {
             Op::Read(a) => {
                 if i == a {
-                    return colour::GREEN;
+                    return colour::YELLOW;
+                }
+            }
+            Op::Write(a, ..) => {
+                if i == a {
+                    return colour::PURPLE;
                 }
             }
             Op::Compare(a, b) => {
@@ -88,7 +95,7 @@ impl Playback for SorterPlayback {
         let useable_w = frame.get_width() - 2 * MARGIN;
         let useable_h = frame.get_height() - 2 * MARGIN;
         let data_len = self.data.len();
-        let bar_w = useable_w / data_len as u32;
+        let bar_w = useable_w as f32 / data_len as f32;
 
         for i in 0..data_len {
             let bar_val = self.data[i];
@@ -96,10 +103,10 @@ impl Playback for SorterPlayback {
 
             let bar_h = (useable_h as f32 * (bar_val as f32 / data_len as f32)) as u32;
 
-            let x = MARGIN + bar_w * i as u32;
+            let x = MARGIN + (bar_w * i as f32) as u32;
             let y = MARGIN + (useable_h - bar_h);
 
-            frame.fill_rect(x, y, bar_w, bar_h, bar_col);
+            frame.fill_rect(x, y, bar_w as u32, bar_h, bar_col);
         }
     }
 }

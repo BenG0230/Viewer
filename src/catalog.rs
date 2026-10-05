@@ -25,4 +25,12 @@ pub static ENTRIES: &[CatalogEntry] = &[
         name: "Heap Sort",
         build_fn: || sorter::build(sorter::algorithms::heap_sort),
     },
+    CatalogEntry {
+        name: "Merge Sort",
+        build_fn: || sorter::build(sorter::algorithms::merge_sort_start),
+    },
+    CatalogEntry {
+        name: "Quick Sort",
+        build_fn: || sorter::build(sorter::algorithms::quick_sort_start),
+    },
 ];

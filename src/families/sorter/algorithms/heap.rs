@@ -1,7 +1,7 @@
 use crate::families::sorter::tracer;
 
 pub fn heap_sort(t: &mut tracer::Tracer) {
-    for i in (0..=t.len() / 2).rev() {
+    for i in (0..t.len() / 2).rev() {
         reheap(t.len(), i, t);
     }
 
@@ -15,20 +15,29 @@ pub fn heap_sort(t: &mut tracer::Tracer) {
 fn reheap(size: usize, root: usize, t: &mut tracer::Tracer) {
     let mut i = root;
 
-    let l = 2 * i + 1;
-    let r = 2 * i + 2;
-
-    if l < size && t.less_than(i, l) {
-        i = l;
+    // Follow largest path down tree
+    while 2 * i + 1 < size {
+        if 2 * i + 2 < size && t.less_than(2 * i + 1, 2 * i + 2) {
+            i = 2 * i + 2;
+        } else {
+            i = 2 * i + 1;
+        }
     }
 
-    if r < size && t.less_than(i, r) {
-        i = r;
+    // Get to position where current root fits
+    while i > root && !t.less_than(root, i) {
+        i = (i - 1) / 2;
     }
 
-    if i != root {
-        t.swap(root, i);
+    // Record path up to root
+    let mut path = vec![i];
+    while *path.last().unwrap() != root {
+        path.push((path.last().unwrap() - 1) / 2);
+    }
+    path.reverse(); // make the path root -> i instead of i -> root 
 
-        reheap(size, i, t);
+    // swap down the path
+    for pair in path.windows(2) {
+        t.swap(pair[0], pair[1]);
     }
 }
