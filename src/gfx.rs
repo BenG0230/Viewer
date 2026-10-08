@@ -2,6 +2,7 @@
 
 pub mod colour;
 mod shapes;
+mod text;
 
 pub struct Frame<'a> {
     width: u32,

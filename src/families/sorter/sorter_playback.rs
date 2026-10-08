@@ -91,6 +91,8 @@ impl Playback for SorterPlayback {
     }
 
     fn draw(&self, frame: &mut crate::gfx::Frame) {
+        frame.draw_text(0, 0, "Hello, World!", 2, colour::WHITE);
+
         let margin_w = (frame.get_width() as f32 * MARGIN) as u32;
         let margin_h = (frame.get_height() as f32 * MARGIN) as u32;
 
