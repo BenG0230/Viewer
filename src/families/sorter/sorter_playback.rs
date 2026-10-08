@@ -69,34 +69,6 @@ impl SorterPlayback {
 }
 
 impl Playback for SorterPlayback {
-    fn jump(&mut self, dx: i32) {
-        if dx == 0 {
-            return;
-        }
-
-        for _ in 0..dx.abs() as usize {
-            if dx > 0 {
-                if self.cursor != self.trace.len() - 1 {
-                    let curr_op = self.trace[self.cursor];
-                    self.perform_op(curr_op);
-
-                    self.cursor += 1;
-                }
-            } else {
-                if self.cursor != 0 {
-                    self.cursor -= 1;
-
-                    // reverse operation under cursor
-                    let last_op = self.trace[self.cursor];
-                    self.reverse_op(last_op);
-                }
-
-                let curr_op = self.trace[self.cursor];
-                self.reverse_op(curr_op);
-            }
-        }
-    }
-
     fn forward(&mut self) {
         // read operation under cursor and perform it
         let curr_op = self.trace[self.cursor];
