@@ -18,6 +18,8 @@ pub struct App {
     window: Option<Arc<Window>>,
     pixels: Option<Pixels<'static>>,
     playback: Option<Box<dyn Playback>>,
+
+    scrub_speed: i32,
 }
 
 impl App {
@@ -26,6 +28,8 @@ impl App {
             window: None,
             pixels: None,
             playback: None,
+
+            scrub_speed: 1,
         }
     }
 }
@@ -95,10 +99,6 @@ impl ApplicationHandler for App {
                 }
             }
             WindowEvent::KeyboardInput { event, .. } => {
-                // if event.repeat {
-                //     return;
-                // }
-
                 if event.logical_key == Key::Named(NamedKey::Escape) {
                     event_loop.exit();
                 }
@@ -111,8 +111,14 @@ impl ApplicationHandler for App {
                         // up/down key = change playback speed / scrub distance?
                         // r = reset?
                         match event.logical_key.as_ref() {
-                            Key::Named(NamedKey::ArrowLeft) => playback.back(),
-                            Key::Named(NamedKey::ArrowRight) => playback.forward(),
+                            Key::Named(NamedKey::ArrowLeft) => playback.jump(-self.scrub_speed),
+                            Key::Named(NamedKey::ArrowRight) => playback.jump(self.scrub_speed),
+                            Key::Named(NamedKey::ArrowUp) => self.scrub_speed += 1,
+                            Key::Named(NamedKey::ArrowDown) => {
+                                if self.scrub_speed > 1 {
+                                    self.scrub_speed -= 1
+                                }
+                            }
                             Key::Character(c) => {
                                 if c.chars().nth(0).unwrap().is_numeric() {
                                     let i = c.parse::<usize>().unwrap();

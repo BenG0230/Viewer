@@ -1,7 +1,8 @@
 use super::Op;
 use crate::{gfx::colour, playback::Playback};
 
-const MARGIN: f32 = 0.05;
+const VERTICAL_MARGIN: f32 = 0.07;
+const HORIZONTAL_MARGIN: f32 = 0.02;
 
 pub struct SorterPlayback {
     input: Vec<u32>,
@@ -68,6 +69,34 @@ impl SorterPlayback {
 }
 
 impl Playback for SorterPlayback {
+    fn jump(&mut self, dx: i32) {
+        if dx == 0 {
+            return;
+        }
+
+        for _ in 0..dx.abs() as usize {
+            if dx > 0 {
+                if self.cursor != self.trace.len() - 1 {
+                    let curr_op = self.trace[self.cursor];
+                    self.perform_op(curr_op);
+
+                    self.cursor += 1;
+                }
+            } else {
+                if self.cursor != 0 {
+                    self.cursor -= 1;
+
+                    // reverse operation under cursor
+                    let last_op = self.trace[self.cursor];
+                    self.reverse_op(last_op);
+                }
+
+                let curr_op = self.trace[self.cursor];
+                self.reverse_op(curr_op);
+            }
+        }
+    }
+
     fn forward(&mut self) {
         // read operation under cursor and perform it
         let curr_op = self.trace[self.cursor];
@@ -91,10 +120,16 @@ impl Playback for SorterPlayback {
     }
 
     fn draw(&self, frame: &mut crate::gfx::Frame) {
-        frame.draw_text(0, 0, "Hello, World!", 2, colour::WHITE);
+        frame.draw_text(
+            10,
+            10,
+            format!("Operations: {}/{}", self.cursor + 1, self.trace.len()).as_str(),
+            3,
+            colour::WHITE,
+        );
 
-        let margin_w = (frame.get_width() as f32 * MARGIN) as u32;
-        let margin_h = (frame.get_height() as f32 * MARGIN) as u32;
+        let margin_w = (frame.get_width() as f32 * HORIZONTAL_MARGIN) as u32;
+        let margin_h = 3 * 8 + 20;
 
         let useable_w = frame.get_width() - 2 * margin_w;
         let useable_h = frame.get_height() - 2 * margin_h;

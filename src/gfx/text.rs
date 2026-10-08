@@ -18,14 +18,7 @@ impl<'a> Frame<'a> {
         }
     }
 
-    pub fn draw_text(
-        &mut self,
-        mut x: u32,
-        y: u32,
-        text: &'static str,
-        size: u32,
-        colour: [u8; 4],
-    ) {
+    pub fn draw_text(&mut self, mut x: u32, y: u32, text: &str, size: u32, colour: [u8; 4]) {
         if x >= self.width || y >= self.height || size == 0 {
             return;
         }
