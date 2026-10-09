@@ -8,6 +8,9 @@ pub struct CatalogEntry {
 }
 
 impl CatalogEntry {
+    pub fn get_name(&self) -> &'static str {
+        self.name
+    }
     pub fn build(&self) -> Box<dyn Playback> {
         (self.build_fn)()
     }

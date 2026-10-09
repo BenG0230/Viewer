@@ -132,7 +132,13 @@ impl ApplicationHandler for App {
                                 if c.chars().nth(0).unwrap().is_numeric() {
                                     let i = c.parse::<usize>().unwrap();
                                     if i != 0 && i - 1 < catalog::ENTRIES.len() {
-                                        self.playback = Some(catalog::ENTRIES[i - 1].build());
+                                        let entry = &catalog::ENTRIES[i - 1];
+
+                                        if let Some(window) = &self.window {
+                                            window.set_title(entry.get_name());
+                                        }
+
+                                        self.playback = Some(entry.build());
                                     }
                                 }
                             }
