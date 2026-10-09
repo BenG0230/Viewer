@@ -1,3 +1,4 @@
+use crate::families::searcher;
 use crate::families::sorter;
 use crate::playback::Playback;
 
@@ -32,5 +33,13 @@ pub static ENTRIES: &[CatalogEntry] = &[
     CatalogEntry {
         name: "Quick Sort",
         build_fn: || sorter::build(sorter::algorithms::quick_sort_start),
+    },
+    CatalogEntry {
+        name: "Linear Search",
+        build_fn: || searcher::build(searcher::algorithms::linear_search, true),
+    },
+    CatalogEntry {
+        name: "Binary Search",
+        build_fn: || searcher::build(searcher::algorithms::binary_search, false),
     },
 ];

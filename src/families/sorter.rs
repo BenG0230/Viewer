@@ -20,8 +20,7 @@ pub(crate) enum Op {
 // Make the tracer and run a method over it and create a player around the returned operation list
 pub fn build(sorter_function: fn(&mut tracer::Tracer)) -> Box<dyn Playback> {
     let mut rng = rand::rng();
-    let arr_orig = (1..=ARRAY_LENGTH).collect::<Vec<u32>>();
-    let mut arr = arr_orig.clone();
+    let mut arr = (1..=ARRAY_LENGTH).collect::<Vec<u32>>();
     arr.shuffle(&mut rng);
 
     // Create a tracer and run the algorithms implementation over it
