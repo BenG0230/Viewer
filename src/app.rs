@@ -88,6 +88,15 @@ impl ApplicationHandler for App {
 
                     frame.clear(colour::BLACK);
 
+                    let scrub_speed_str = format!("{}", self.scrub_speed);
+                    frame.draw_text(
+                        frame.get_width() - 24 * scrub_speed_str.len() as u32 - 10,
+                        10,
+                        &scrub_speed_str,
+                        3,
+                        colour::WHITE,
+                    );
+
                     if let Some(playback) = &mut self.playback {
                         playback.draw(&mut frame);
                     }
